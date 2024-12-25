@@ -12,7 +12,7 @@ test('login test', async ({ page }) => {
   await expect(page.locator('[data-test="password"]')).toHaveValue('secret_sauce');
 
   await page.locator('[data-test="login-button"]').click();
-
+  // Expect after login button is clicked
   await page.locator('.title').waitFor({ state: 'visible' });
   await expect(page.locator('.title')).toHaveText('Products');
 });
