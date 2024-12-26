@@ -18,14 +18,14 @@ test('filter products', async ({ page }) => {
     await expect(page.locator('.title')).toHaveText('Products');
 
     const listFiltes = page.locator('.inventory_list');
-    await listFiltes.waitFor(); // Wait for the element indicating successful login
+    await listFiltes.waitFor(); // wait for the list of filters to be visible
 
     // Apply A-Z filter
     await page.selectOption('.product_sort_container', 'az'); // Select A-Z option from dropdown
     // Retrieve list of items
-    const items = await page.locator('.inventory_item_name').allTextContents();
+    const items = await page.locator('.inventory_item_name').allTextContents(); //setelah filter dipilih, ambil semua nama item dan dibuatkan array
     // Verify item order
-    const sortedItems = [...items].sort(); // Sort items alphabetically
+    const sortedItems = [...items].sort(); // array items di sortir dari A-Z
     expect(items).toEqual(sortedItems); // Bandingkan daftar asli dengan daftar yang diurutkan
    
     //await listFiltes.waitFor(); tidak perlu di panggil lagi karena sudah di panggil di atass
@@ -33,8 +33,8 @@ test('filter products', async ({ page }) => {
     await page.selectOption('.product_sort_container', 'za'); // Select Z-A option from dropdown
     // Retrieve list of items
     const itemsZA = await page.locator('.inventory_item_name').allTextContents();
-    // Verify item order
-    const sortedItemsZA = [...itemsZA].sort().reverse(); // Sort items alphabetically in reverse order
+    const sortedItemsZA = [...itemsZA].sort().reverse(); // array di sortir dari Z-A dengan reverse
+    expect(itemsZA).toEqual(sortedItemsZA); // Compare original list with sorted list
 
     // Apply Price (low to high) filter
     await page.selectOption('.product_sort_container', 'lohi'); // Select Price (low to high) option from dropdown
