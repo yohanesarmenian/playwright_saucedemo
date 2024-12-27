@@ -76,3 +76,46 @@ test('selectItem test using selecteditem', async ({ page }) => {
     await expect(page.locator('.inventory_details_desc')).toHaveText('carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.');
     await expect(page.locator('.inventory_details_price')).toHaveText('$29.99');
 });
+
+test('check image item using standard user', async ({page}) =>{
+    await page.goto('https://www.saucedemo.com/');
+    await expect(page).toHaveURL('https://www.saucedemo.com/');
+    await expect(page).toHaveTitle('Swag Labs');
+    // login
+    await page.getByPlaceholder('Username').fill('standard_user');
+    await page.getByPlaceholder('Password').fill('secret_sauce');
+    // click login 
+    await page.click('#login-button');
+    // expect after login
+    await page.locator('.title').waitFor({ state: 'visible' });
+    await expect(page.locator('.title')).toHaveText('Products');
+    // select item
+    await page.locator('[data-test="inventory-item-name"]').filter({ hasText: 'Sauce Labs Backpack' }).waitFor({ state: 'visible' });
+    await expect (page.getByAltText('Sauce Labs Backpack')).toHaveAttribute('src', '/static/media/sauce-backpack-1200x1500.0a0b85a3.jpg');
+    await page.locator('[data-test="inventory-item-name"]').filter({ hasText: 'Sauce Labs Backpack' }).click();
+    await page.locator('.inventory_details_img').waitFor({ state: 'visible' });
+    await expect(page.locator('.inventory_details_img')).toHaveAttribute('src','/static/media/sauce-backpack-1200x1500.0a0b85a3.jpg');
+});
+
+
+test('check image item using problem user' ,async({page}) =>{
+    await page.goto('https://www.saucedemo.com/');
+    await expect(page).toHaveURL('https://www.saucedemo.com/');
+    await expect(page).toHaveTitle('Swag Labs');
+    // login
+    await page.getByPlaceholder('Username').fill('problem_user');
+    await page.getByPlaceholder('Password').fill('secret_sauce');
+    // click login
+    await page.click('#login-button');
+    // expect after login
+    await page.locator('.title').waitFor({ state: 'visible' });
+    await expect(page.locator('.title')).toHaveText('Products');
+    // select item
+    await page.locator('[data-test="inventory-item-name"]').filter({ hasText: 'Sauce Labs Backpack' }).waitFor({ state: 'visible' });
+    await expect (page.getByAltText('Sauce Labs Backpack')).toHaveAttribute('src', '/static/media/sl-404.168b1cce.jpg'); //ini negative case seharus nya url nya /static/media/sauce-backpack-1200x1500.0a0b85a3.jpg
+    //await expect(page.locator('[id=item_4_img_link]')).toHaveAttribute('src', 'https://www.saucedemo.com/static/media/sauce-backpack-1200x1500.34e7aa42.jpg');
+    await page.locator('[data-test="inventory-item-name"]').filter({ hasText: 'Sauce Labs Backpack' }).click();
+    // expect image
+    await page.locator('.inventory_details_img').waitFor({ state: 'visible' });
+    await expect(page.locator('.inventory_details_img')).toHaveAttribute('src','/static/media/sauce-pullover-1200x1500.51d7ffaf.jpg'); // ini juga sama seharusnya url gambar adalah '/static/media/sauce-backpack-1200x1500.0a0b85a3.jpg' tapi agar pass saya ganti dengan url yang salah dulu
+});
